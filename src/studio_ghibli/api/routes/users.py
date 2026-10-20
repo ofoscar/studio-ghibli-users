@@ -6,7 +6,7 @@ from sqlmodel import Session, select
 
 from studio_ghibli.core.database import get_session
 from studio_ghibli.models.user import UserTable
-from studio_ghibli.schemas.user import UserRead, UserCreate
+from studio_ghibli.schemas.user import UserRead, UserCreate, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -46,3 +46,39 @@ def get_user(user_id: UUID, session: SessionDep) -> UserRead:
         )
 
     return UserRead(id=db_user.id, name=db_user.name, role=db_user.role)
+
+@router.put("/{user_id}", response_model=UserRead)
+def update_user(
+    user_id: UUID,
+    user: UserUpdate,
+    session: SessionDep,
+) -> UserRead:
+    db_user = session.get(UserTable, user_id)
+
+    if db_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    db_user.name = user.name
+    db_user.role = user.role
+
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+
+    return UserRead(id=db_user.id, name=db_user.name, role=db_user.role)
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(user_id: UUID, session: SessionDep) -> None:
+    db_user = session.get(UserTable, user_id)
+
+    if db_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detai="User not found"
+        )
+
+    session.delete(db_user)
+    session.commit()

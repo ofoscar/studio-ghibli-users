@@ -23,3 +23,8 @@ class UserRead(BaseModel):
     id: UUID
     name: str
     role: UserRole
+
+class UserUpdate(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    role: UserRole
+
