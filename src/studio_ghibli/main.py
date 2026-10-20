@@ -3,11 +3,13 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from studio_ghibli.api.routes.users import router as users_router
+from studio_ghibli.core.bootstrap import ensure_admin_exists
 from studio_ghibli.core.database import create_db_and_tables
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
   create_db_and_tables()
+  ensure_admin_exists()
   yield
 
 app = FastAPI(
