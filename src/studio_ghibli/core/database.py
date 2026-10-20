@@ -1,6 +1,8 @@
 from sqlmodel import Session, SQLModel, create_engine
 
-DATABASE_URL = "sqlite:///./studio_ghibli.db"
+from studio_ghibli.core.config import settings
+
+DATABASE_URL = settings.database_url
 
 engine = create_engine(
     DATABASE_URL,
