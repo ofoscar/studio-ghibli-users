@@ -1,0 +1,1 @@
+User's app integrating Studio Ghibli API with FastAPI
