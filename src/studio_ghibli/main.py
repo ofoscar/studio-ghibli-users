@@ -1,9 +1,18 @@
 from fastapi import FastAPI
 
+from contextlib import asynccontextmanager
+
 from studio_ghibli.api.routes.users import router as users_router
+from studio_ghibli.core.database import create_db_and_tables
+
+@asynccontextmanager
+async def lifespan(app:FastAPI):
+  create_db_and_tables()
+  yield
 
 app = FastAPI(
   title = "Studio ghibli users app",
+  lifespan=lifespan
 )
 
 app.include_router(users_router, prefix="/api/v1")
