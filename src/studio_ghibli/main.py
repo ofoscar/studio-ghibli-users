@@ -1,9 +1,10 @@
+import httpx
 from fastapi import FastAPI
-
 from contextlib import asynccontextmanager
 
 from studio_ghibli.api.routes.users import router as users_router
 from studio_ghibli.api.routes.auth import router as auth_router
+from studio_ghibli.api.routes.ghibli import router as ghibli_router
 from studio_ghibli.core.bootstrap import ensure_admin_exists
 from studio_ghibli.core.database import create_db_and_tables
 
@@ -11,7 +12,10 @@ from studio_ghibli.core.database import create_db_and_tables
 async def lifespan(app:FastAPI):
   create_db_and_tables()
   ensure_admin_exists()
-  yield
+
+  async with httpx.AsyncClient(timeout=10.0) as client:
+    app.state.http_client = client
+    yield
 
 app = FastAPI(
   title = "Studio ghibli users app",
@@ -20,3 +24,4 @@ app = FastAPI(
 
 app.include_router(users_router, prefix="/api/v1")
 app.include_router(auth_router, prefix="/api/v1")
+app.include_router(ghibli_router, prefix="/api/v1")
