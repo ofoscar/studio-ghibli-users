@@ -1,8 +1,9 @@
 from typing import Annotated
 from uuid import UUID
 
+import httpx
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from sqlmodel import Session
@@ -22,6 +23,10 @@ credentials_error = HTTPException(
     headers={"WWW-Authenticate": "Bearer"},
 )
 
+def get_http_client(request: Request) -> httpx.AsyncClient:
+    return request.app.state.http_client
+
+HttpClientDep = Annotated[httpx.AsyncClient, Depends(get_http_client)]
 
 def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
