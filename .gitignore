@@ -10,3 +10,5 @@ wheels/
 .venv
 
 studio_ghibli.db
+
+.env
