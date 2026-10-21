@@ -1299,6 +1299,7 @@ source = { editable = "." }
 dependencies = [
     { name = "alembic" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx" },
     { name = "pwdlib", extra = ["argon2"] },
     { name = "pydantic-settings" },
     { name = "pyjwt" },
@@ -1310,6 +1311,7 @@ dependencies = [
 requires-dist = [
     { name = "alembic", specifier = ">=1.20.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.150.0" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "pwdlib", extras = ["argon2"], specifier = ">=0.3.1" },
     { name = "pydantic-settings", extras = ["dotenv"], specifier = ">=2.16.0" },
     { name = "pyjwt", specifier = ">=2.15.1" },
