@@ -17,8 +17,9 @@ class UserRole(str, Enum):
 class UserCreate(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     role: UserRole
-
-
+    username: str = Field(min_length=3, max_length=50)
+    password: str = Field(min_length=12, max_length=128)
+    
 class UserRead(BaseModel):
     id: UUID
     name: str

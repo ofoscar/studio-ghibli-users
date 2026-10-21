@@ -4,17 +4,19 @@ from uuid import UUID, uuid4
 from fastapi import APIRouter, Depends, Query, status, HTTPException
 from sqlmodel import Session, select
 
+from studio_ghibli.api.dependencies import require_admin
 from studio_ghibli.core.database import get_session
+from studio_ghibli.core.security import hash_password
 from studio_ghibli.models.user import UserTable
 from studio_ghibli.schemas.user import UserRead, UserCreate, UserUpdate
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/users", tags=["users"], dependencies=[Depends(require_admin)])
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, session: SessionDep) -> UserRead:
-    db_user = UserTable(name=user.name, role=user.role)
+    db_user = UserTable(name=user.name, role=user.role, username=user.username, password_hash=hash_password(user.password))
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
